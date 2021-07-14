@@ -1,16 +1,18 @@
 module.exports = {
 	name: 'mute',
 	description: 'mute the bad guys!',
-	execute(message, args) {
+	execute(client,message, args) {
     //function still causing a little error
 		const Discord = require('discord.js');
     let guild = message.guild;
+  	//let mentioned = guild.member(message.mentions.users.first()); //.id
+		let mentioned = message.mentions.users.first();
 
-    let mentioned = guild.member(message.mentions.users.first()); //.id
-    let user =guild.member(message.author);
+	//  let user =guild.member(message.author);
+		let user = message.author;
 		let dateTime = message.createdAt;
-		args.shift(); //to remove the first arrays elem
-		let reason = args.join(' ');
+		let reason = args.slice(1).join(' ');
+
 
 		if(reason.length < 4)
 			{
@@ -21,7 +23,7 @@ module.exports = {
           return message.reply('Sorry mate,you dont have that kind of power yet!');
 
       }
-      else if(mentioned.hasPermission('MUTE_MEMBERS'))
+      else if(!mentioned.kickable)
         {
           message.reply('The mentioned one has the same/more permessions as yours ');
         }
@@ -49,19 +51,20 @@ module.exports = {
           mentioned.roles.add((muteRole.id))
 
           .then(()=>{
-            message.channel.send(`**${mentioned.user.username} has been frozen! To unfreeze them, use the unfreeze command!**`)
-            message.delete(5000)
+            message.channel.send(`**${mentioned.username} has been frozen! To unfreeze them, use the unfreeze command!**`)
+						message.delete({ timeout: 5000 })
           } )
           const embed = new Discord.MessageEmbed();
           embed
           .setTitle('MUTE INFO')
           .setColor('#E67E22')
           .setDescription('Just a regular mute-info letter')
-          .addField('Muted:',mentioned.user.username)
+          .addField('Muted:',mentioned.username)
 					.addField('Reason',reason,true)
-          .addField('ID',mentioned.user.id)
+          .addField('ID',mentioned.id)
+					.setImage(mentioned.displayAvatarURL())
 					.addField('dateTime:',dateTime)
-          .addField('BY:',user.user.username)
+          .addField('BY:',user.username)
 
 
           message.channel.send(embed);

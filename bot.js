@@ -1,17 +1,12 @@
-/*const Discord= require('discord.js');
-//const MessageEmbed = require('discord.js');
-const {prefix,token} = require('./config.json');
-
-const client = new Discord.Client();
-const client.commands = new Discord.Collection(); */
-
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
 client.commands = new Discord.Collection();
-const {prefix,token} = require('./config.json');
+//const {prefix,TOKEN} = require('./config.json');
 const fs = require('fs');
-
+require('dotenv').config()
+prefix = process.env.prefix;
+TOKEN = process.env.TOKEN;
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('js'));
 let d = new Date();
 
@@ -60,7 +55,7 @@ client.on('message', message => {
   	if (!client.commands.has(command)) return;
 
   	try {
-  		client.commands.get(command).execute(message, args);
+  		client.commands.get(command).execute(client,message, args);
   	} catch (error) {
   		console.error(error);
   		message.reply('there was an error trying to execute that command!');
@@ -70,4 +65,4 @@ client.on('message', message => {
 }
 )
 
-client.login(token);
+client.login(TOKEN);

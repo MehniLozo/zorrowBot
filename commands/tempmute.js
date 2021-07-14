@@ -1,17 +1,17 @@
 module.exports = {
 	name: 'tempmute',
 	description: 'mute the bad guys temporarily!',
-	execute(message, args) {
+	execute(client,message, args) {
     //function still causing a little error
 		const Discord = require('discord.js');
     let guild = message.guild;
 
-    let mentioned = guild.member(message.mentions.users.first()); //.id
+    let mentioned = guild.member(message.mentions.users.first()); 
     let user =guild.member(message.author);
 		let dateTime = message.createdAt;
-		args.shift(); //to remove the first arrays elem
+		let reason = args.slice(1).join(' ');
+
     let timing = parseInt(args.shift())*1000;
-		let reason = args.join(' ');
 
 
 		if(!timing || reason.length < 4)
