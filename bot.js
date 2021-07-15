@@ -20,22 +20,23 @@ client.on('message', message => {
 
 
   const badWords = ['fuck','mother','sex','merde','bitch'];
-  badWords.forEach(async (word) => {
+  if(badWords.some((word) => message.content.includes(word)))
+  {
+    message.delete({timeout: 5000})
+    .then(msg => console.log(`Deleted message from ${msg.author.username} after 5 seconds`))
+    .then(() => {
+      const embed = new Discord.MessageEmbed()
+      .setTitle('Message-Delete')
+      .addField('Bad boy:',message.author.username)
+      .setColor(0x0000FF)
+  		.setTimestamp()
+      .setFooter(`Made by Lozo`);
 
+      message.channel.send(embed);
+        })
+    .catch(console.error);
+  }
 
-    if (message.content.toLowerCase().includes(word))
-    {
-      await message.delete({timeout: 2000})
-      .then((msg) => {
-        message.reply('We dont do that here!');
-        console.log(`${message.author.username}'message has been delete in ${message.channel.name}`)
-    }).then((msg) => {
-
-    })
-      .catch(e => console.log(e));
-    }
-    return;
-})
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
